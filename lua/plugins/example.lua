@@ -1,6 +1,6 @@
 -- since this is just an example spec, don't actually load anything here and return an empty spec
 -- stylua: ignore
-if true then return {} end
+-- if true then return {} end
 
 -- every spec file under config.plugins will be loaded automatically by lazy.nvim
 --
@@ -10,13 +10,47 @@ if true then return {} end
 -- * override the configuration of LazyVim plugins
 return {
   -- add gruvbox
-  { "ellisonleao/gruvbox.nvim" },
+  -- { "ellisonleao/gruvbox.nvim" },
+
+  { "AlphaTechnolog/pywal.nvim",
+    config = function ()
+      local pywal = require('pywal')
+      pywal.setup()
+    end
+  },
 
   -- Configure LazyVim to load gruvbox
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "gruvbox",
+--      colorscheme = "wal",
+    },
+  },
+  {
+    "andweeb/presence.nvim",
+    opts = {},
+  },
+    {
+    "nvim-lualine/lualine.nvim",
+    event = "VeryLazy",
+    opts = {
+      options = { theme = 'auto', section_separators = '', component_separators = '' }
+    },
+  },
+
+--  {
+--    "xiyaowong/nvim-transparent",
+--    opts = {
+--      enable = true,
+--      exclude = {
+--        "NotifyBackground"
+--      },
+--    },
+--  },
+  {
+    "rcarriga/nvim-notify",
+    opts = {
+      background_colour = "#000000"
     },
   },
 
@@ -28,7 +62,7 @@ return {
   },
 
   -- disable trouble
-  { "folke/trouble.nvim", enabled = false },
+  -- { "folke/trouble.nvim", enabled = false },
 
   -- add symbols-outline
   {
@@ -95,6 +129,26 @@ return {
         pyright = {},
       },
     },
+    dependencies = {
+      {
+      "simrat39/rust-tools.nvim",
+      init = function ()
+          local rt = require("rust-tools")
+rt.setup({
+  server = {
+    on_attach = function(_, bufnr)
+      -- Hover actions
+      vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
+      -- Code action groups
+      vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
+      -- Inlay Hint
+      require('rust-tools').inlay_hints.enable()
+    end,
+  },
+})
+        end,
+    },
+    },
   },
 
   -- add tsserver and setup with typescript.nvim instead of lspconfig
@@ -134,84 +188,7 @@ return {
 
   -- for typescript, LazyVim also includes extra specs to properly setup lspconfig,
   -- treesitter, mason and typescript.nvim. So instead of the above, you can use:
-  { import = "lazyvim.plugins.extras.lang.typescript" },
-
-  -- add more treesitter parsers
-  {
-    "nvim-treesitter/nvim-treesitter",
-    opts = {
-      ensure_installed = {
-        "bash",
-        "help",
-        "html",
-        "javascript",
-        "json",
-        "lua",
-        "markdown",
-        "markdown_inline",
-        "python",
-        "query",
-        "regex",
-        "tsx",
-        "typescript",
-        "vim",
-        "yaml",
-      },
-    },
-  },
-
-  -- since `vim.tbl_deep_extend`, can only merge tables and not lists, the code above
-  -- would overwrite `ensure_installed` with the new value.
-  -- If you'd rather extend the default config, use the code below instead:
-  {
-    "nvim-treesitter/nvim-treesitter",
-    opts = function(_, opts)
-      -- add tsx and treesitter
-      vim.list_extend(opts.ensure_installed, {
-          "tsx",
-          "typescript",
-      })
-    end,
-  },
-
-  -- the opts function can also be used to change the default opts:
-  {
-    "nvim-lualine/lualine.nvim",
-    event = "VeryLazy",
-    opts = function(_, opts)
-      table.insert(opts.sections.lualine_x, "😄")
-    end,
-  },
-
-  -- or you can return new options to override all the defaults
-  {
-    "nvim-lualine/lualine.nvim",
-    event = "VeryLazy",
-    opts = function()
-      return {
-        --[[add your custom lualine config here]]
-      }
-    end,
-  },
-
-  -- use mini.starter instead of alpha
-  { import = "lazyvim.plugins.extras.ui.mini-starter" },
-
-  -- add jsonls and schemastore ans setup treesitter for json, json5 and jsonc
-  { import = "lazyvim.plugins.extras.lang.json" },
-
-  -- add any tools you want to have installed below
-  {
-    "williamboman/mason.nvim",
-    opts = {
-      ensure_installed = {
-        "stylua",
-        "shellcheck",
-        "shfmt",
-        "flake8",
-      },
-    },
-  },
+  -- { import = "lazyvim.plugins.extras.lang.typescript" },
 
   -- Use <tab> for completion and snippets (supertab)
   -- first: disable default <tab> and <s-tab> behavior in LuaSnip
@@ -220,6 +197,12 @@ return {
     keys = function()
       return {}
     end,
+  },
+  {
+    "Exafunction/codeium.vim",
+    config = function ()
+      vim.keymap.set('i', 'pp', function() return vim.fn['codeium#Accept']() end, {expr=true})
+    end
   },
   -- then: setup supertab in cmp
   {
