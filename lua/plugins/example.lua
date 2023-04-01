@@ -12,8 +12,9 @@ return {
   -- add gruvbox
   -- { "ellisonleao/gruvbox.nvim" },
 
-  { "AlphaTechnolog/pywal.nvim",
-    config = function ()
+  {
+    "AlphaTechnolog/pywal.nvim",
+    config = function()
       local pywal = require('pywal')
       pywal.setup()
     end
@@ -23,14 +24,14 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
---      colorscheme = "wal",
+      --      colorscheme = "wal",
     },
   },
   {
     "andweeb/presence.nvim",
     opts = {},
   },
-    {
+  {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
     opts = {
@@ -38,15 +39,15 @@ return {
     },
   },
 
---  {
---    "xiyaowong/nvim-transparent",
---    opts = {
---      enable = true,
---      exclude = {
---        "NotifyBackground"
---      },
---    },
---  },
+  --  {
+  --    "xiyaowong/nvim-transparent",
+  --    opts = {
+  --      enable = true,
+  --      exclude = {
+  --        "NotifyBackground"
+  --      },
+  --    },
+  --  },
   {
     "rcarriga/nvim-notify",
     opts = {
@@ -59,6 +60,76 @@ return {
     "folke/trouble.nvim",
     -- opts will be merged with the parent spec
     opts = { use_diagnostic_signs = true },
+  },
+
+  {
+    "goolord/alpha-nvim",
+    event = "VimEnter",
+    opts = function()
+      local dashboard = require("alpha.themes.dashboard")
+      -- local logo = [[S-Stop looking at me! G-Go to work!]]
+      local logo = [[
+⣇⣿⠘⣿⣿⣿⡿⡿⣟⣟⢟⢟⢝⠵⡝⣿⡿⢂⣼⣿⣷⣌⠩⡫⡻⣝⠹⢿⣿⣷
+⡆⣿⣆⠱⣝⡵⣝⢅⠙⣿⢕⢕⢕⢕⢝⣥⢒⠅⣿⣿⣿⡿⣳⣌⠪⡪⣡⢑⢝⣇
+⡆⣿⣿⣦⠹⣳⣳⣕⢅⠈⢗⢕⢕⢕⢕⢕⢈⢆⠟⠋⠉⠁⠉⠉⠁⠈⠼⢐⢕⢽
+⡗⢰⣶⣶⣦⣝⢝⢕⢕⠅⡆⢕⢕⢕⢕⢕⣴⠏⣠⡶⠛⡉⡉⡛⢶⣦⡀⠐⣕⢕
+⡝⡄⢻⢟⣿⣿⣷⣕⣕⣅⣿⣔⣕⣵⣵⣿⣿⢠⣿⢠⣮⡈⣌⠨⠅⠹⣷⡀⢱⢕
+⡝⡵⠟⠈⢀⣀⣀⡀⠉⢿⣿⣿⣿⣿⣿⣿⣿⣼⣿⢈⡋⠴⢿⡟⣡⡇⣿⡇⡀⢕
+⡝⠁⣠⣾⠟⡉⡉⡉⠻⣦⣻⣿⣿⣿⣿⣿⣿⣿⣿⣧⠸⣿⣦⣥⣿⡇⡿⣰⢗⢄
+⠁⢰⣿⡏⣴⣌⠈⣌⠡⠈⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣬⣉⣉⣁⣄⢖⢕⢕⢕
+⡀⢻⣿⡇⢙⠁⠴⢿⡟⣡⡆⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣵⣵⣿
+⡻⣄⣻⣿⣌⠘⢿⣷⣥⣿⠇⣿⣿⣿⣿⣿⣿⠛⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣷⢄⠻⣿⣟⠿⠦⠍⠉⣡⣾⣿⣿⣿⣿⣿⣿⢸⣿⣦⠙⣿⣿⣿⣿⣿⣿⣿⣿⠟
+⡕⡑⣑⣈⣻⢗⢟⢞⢝⣻⣿⣿⣿⣿⣿⣿⣿⠸⣿⠿⠃⣿⣿⣿⣿⣿⣿⡿⠁⣠
+⡝⡵⡈⢟⢕⢕⢕⢕⣵⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣶⣿⣿⣿⣿⣿⠿⠋⣀⣈⠙
+⡝⡵⡕⡀⠑⠳⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠛⢉⡠⡲⡫⡪⡪⡣
+      ]]
+
+      dashboard.section.header.val = vim.split(logo, "\n")
+      dashboard.section.buttons.val = {
+        dashboard.button("f", " " .. " Find file", ":Telescope find_files <CR>"),
+        dashboard.button("n", " " .. " New file", ":ene <BAR> startinsert <CR>"),
+        dashboard.button("r", " " .. " Recent files", ":Telescope oldfiles <CR>"),
+        dashboard.button("g", " " .. " Find text", ":Telescope live_grep <CR>"),
+        dashboard.button("c", " " .. " Config", ":e $MYVIMRC <CR>"),
+        dashboard.button("s", " " .. " Restore Session", [[:lua require("persistence").load() <cr>]]),
+        dashboard.button("l", "󰒲 " .. " Lazy", ":Lazy<CR>"),
+        dashboard.button("q", " " .. " Quit", ":qa<CR>"),
+      }
+      for _, button in ipairs(dashboard.section.buttons.val) do
+        button.opts.hl = "AlphaButtons"
+        button.opts.hl_shortcut = "AlphaShortcut"
+      end
+      dashboard.section.header.opts.hl = "AlphaHeader"
+      dashboard.section.buttons.opts.hl = "AlphaButtons"
+      dashboard.section.footer.opts.hl = "AlphaFooter"
+      dashboard.opts.layout[1].val = 8
+      return dashboard
+    end,
+    config = function(_, dashboard)
+      -- close Lazy and re-open when the dashboard is ready
+      if vim.o.filetype == "lazy" then
+        vim.cmd.close()
+        vim.api.nvim_create_autocmd("User", {
+          pattern = "AlphaReady",
+          callback = function()
+            require("lazy").show()
+          end,
+        })
+      end
+
+      require("alpha").setup(dashboard.opts)
+
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "LazyVimStarted",
+        callback = function()
+          local stats = require("lazy").stats()
+          local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
+          dashboard.section.footer.val = "⚡ Neovim loaded " .. stats.count .. " plugins in " .. ms .. "ms"
+          pcall(vim.cmd.AlphaRedraw)
+        end,
+      })
+    end,
   },
 
   -- disable trouble
@@ -131,23 +202,23 @@ return {
     },
     dependencies = {
       {
-      "simrat39/rust-tools.nvim",
-      init = function ()
+        "simrat39/rust-tools.nvim",
+        init = function()
           local rt = require("rust-tools")
-rt.setup({
-  server = {
-    on_attach = function(_, bufnr)
-      -- Hover actions
-      vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
-      -- Code action groups
-      vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
-      -- Inlay Hint
-      require('rust-tools').inlay_hints.enable()
-    end,
-  },
-})
+          rt.setup({
+            server = {
+              on_attach = function(_, bufnr)
+                -- Hover actions
+                vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
+                -- Code action groups
+                vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
+                -- Inlay Hint
+                require('rust-tools').inlay_hints.enable()
+              end,
+            },
+          })
         end,
-    },
+      },
     },
   },
 
@@ -159,7 +230,7 @@ rt.setup({
       init = function()
         require("lazyvim.util").on_attach(function(_, buffer)
           -- stylua: ignore
-          vim.keymap.set( "n", "<leader>co", "TypescriptOrganizeImports", { buffer = buffer, desc = "Organize Imports" })
+          vim.keymap.set("n", "<leader>co", "TypescriptOrganizeImports", { buffer = buffer, desc = "Organize Imports" })
           vim.keymap.set("n", "<leader>cR", "TypescriptRenameFile", { desc = "Rename File", buffer = buffer })
         end)
       end,
@@ -200,8 +271,8 @@ rt.setup({
   },
   {
     "Exafunction/codeium.vim",
-    config = function ()
-      vim.keymap.set('i', 'pp', function() return vim.fn['codeium#Accept']() end, {expr=true})
+    config = function()
+      vim.keymap.set('n', 'pp', function() return vim.fn['codeium#Accept']() end, { expr = true })
     end
   },
   -- then: setup supertab in cmp
@@ -247,4 +318,55 @@ rt.setup({
       })
     end,
   },
+  {
+    "sidebar-nvim/sidebar.nvim",
+    init = function() require("sidebar-nvim").setup({ open = true }) end
+  },
+  {"folke/neodev.nvim",
+    init = function()
+      require("neodev").setup({library = { plugins = { "nvim-dap-ui" }, types = true }})
+    end,
+  dependencies = {
+    "rcarriga/nvim-dap-ui",
+    dependencies = {
+    {"mfussenegger/nvim-dap",
+          init = function() 
+            require("dap").adapters.lldb = {
+	type = "executable",
+	command = "/usr/bin/lldb-vscode", -- adjust as needed
+	name = "lldb",
+}
+
+local lldb = {
+	name = "Launch lldb",
+	type = "lldb", -- matches the adapter
+	request = "launch", -- could also attach to a currently running process
+	program = function()
+		return vim.fn.input(
+			"Path to executable: ",
+			vim.fn.getcwd() .. "/",
+			"file"
+		)
+	end,
+	cwd = "${workspaceFolder}",
+	stopOnEntry = false,
+	args = {},
+	runInTerminal = false,
+}
+
+require('dap').configurations.rust = {
+	lldb -- different debuggers or more configurations can be used here
+}
+require("dapui").setup()
+local wk = require("which-key")
+wk.register({
+  ["<leader>dk"] = {  function() require('dap').continue() end, "Continue Debugging" },
+  ["<leader>dl"] = {  function() require('dap').run_last() end, "Run last" },
+  ["<leader>db"] = { function() require('dap').toggle_breakpoint() end, "Toggle breakpoint"  },
+  ["<leader>do"] = { function() require('dapui').toggle() end, "Toggle Debug UI" },
+})
+          end
+          }
+    }
+  }}
 }
